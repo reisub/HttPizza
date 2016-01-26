@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sexy.code.url;
+package sexy.code;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
@@ -28,8 +27,11 @@ import static org.junit.Assert.fail;
  * Tests how each code point is encoded and decoded in the context of each URL component.
  */
 class UrlComponentEncodingTester {
+
     private static final int UNICODE_2 = 0x07ff; // Arbitrary code point that's 2 bytes in UTF-8.
+
     private static final int UNICODE_3 = 0xffff; // Arbitrary code point that's 3 bytes in UTF-8.
+
     private static final int UNICODE_4 = 0x10ffff; // Arbitrary code point that's 4 bytes in UTF-8.
 
     /**
@@ -177,6 +179,7 @@ class UrlComponentEncodingTester {
     }
 
     private final Map<Integer, Encoding> encodings;
+
     private final StringBuilder uriEscapedCodePoints = new StringBuilder();
 
     public UrlComponentEncodingTester() {
@@ -211,7 +214,9 @@ class UrlComponentEncodingTester {
             Encoding encoding = entry.getValue();
             int codePoint = entry.getKey();
             testEncodeAndDecode(codePoint, component);
-            if (encoding == Encoding.SKIP) continue;
+            if (encoding == Encoding.SKIP) {
+                continue;
+            }
 
             testParseOriginal(codePoint, encoding, component);
             testParseAlreadyEncoded(codePoint, encoding, component);
@@ -249,7 +254,9 @@ class UrlComponentEncodingTester {
 
     private void testParseOriginal(int codePoint, Encoding encoding, Component component) {
         String encoded = encoding.encode(codePoint);
-        if (encoding != Encoding.PERCENT) return;
+        if (encoding != Encoding.PERCENT) {
+            return;
+        }
         String identity = Encoding.IDENTITY.encode(codePoint);
         String urlString = component.urlString(identity);
         HttpUrl url = HttpUrl.parse(urlString);
@@ -313,17 +320,13 @@ class UrlComponentEncodingTester {
 
         PERCENT {
             public String encode(int codePoint) {
-                try {
-                    String str = IDENTITY.encode(codePoint);
-                    byte[] bytes = str.getBytes("UTF-8");
-                    StringBuilder sb = new StringBuilder();
-                    for (byte b : bytes) {
-                        sb.append(String.format("%%%02X", b));
-                    }
-                    return sb.toString();
-                } catch (UnsupportedEncodingException e) {
-                    return null;
+                String str = IDENTITY.encode(codePoint);
+                byte[] bytes = str.getBytes(Util.UTF_8);
+                StringBuilder sb = new StringBuilder();
+                for (byte b : bytes) {
+                    sb.append(String.format("%%%02X", b));
                 }
+                return sb.toString();
             }
         },
 

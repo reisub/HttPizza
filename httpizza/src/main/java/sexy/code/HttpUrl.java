@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sexy.code.url;
+package sexy.code;
 
+import java.io.UnsupportedEncodingException;
+import java.net.IDN;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -22,17 +24,19 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import static sexy.code.url.Util.delimiterOffset;
-
 /**
+ * Copied from OkHttp and changed so that it does not depend on Okio but uses java NIO instead.
+ *
  * A uniform resource locator (URL) with a scheme of either {@code http} or {@code https}. Use this
  * class to compose and decompose Internet addresses. For example, this code will compose and print
  * a URL for Google search: <pre>   {@code
@@ -275,8 +279,7 @@ import static sexy.code.url.Util.delimiterOffset;
  */
 public final class HttpUrl {
 
-    private static final char[] HEX_DIGITS =
-            {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
     static final String USERNAME_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
 
@@ -421,7 +424,7 @@ public final class HttpUrl {
             return "";
         }
         int usernameStart = scheme.length() + 3; // "://".length() == 3.
-        int usernameEnd = Util.delimiterOffset(url, usernameStart, url.length(), ":@");
+        int usernameEnd = delimiterOffset(url, usernameStart, url.length(), ":@");
         return url.substring(usernameStart, usernameEnd);
     }
 
@@ -496,7 +499,7 @@ public final class HttpUrl {
      */
     public String encodedPath() {
         int pathStart = url.indexOf('/', scheme.length() + 3); // "://".length() == 3.
-        int pathEnd = Util.delimiterOffset(url, pathStart, url.length(), "?#");
+        int pathEnd = delimiterOffset(url, pathStart, url.length(), "?#");
         return url.substring(pathStart, pathEnd);
     }
 
@@ -509,11 +512,11 @@ public final class HttpUrl {
 
     public List<String> encodedPathSegments() {
         int pathStart = url.indexOf('/', scheme.length() + 3);
-        int pathEnd = Util.delimiterOffset(url, pathStart, url.length(), "?#");
+        int pathEnd = delimiterOffset(url, pathStart, url.length(), "?#");
         List<String> result = new ArrayList<>();
         for (int i = pathStart; i < pathEnd; ) {
             i++; // Skip the '/'.
-            int segmentEnd = Util.delimiterOffset(url, i, pathEnd, '/');
+            int segmentEnd = delimiterOffset(url, i, pathEnd, '/');
             result.add(url.substring(i, segmentEnd));
             i = segmentEnd;
         }
@@ -534,7 +537,7 @@ public final class HttpUrl {
             return null; // No query.
         }
         int queryStart = url.indexOf('?') + 1;
-        int queryEnd = Util.delimiterOffset(url, queryStart + 1, url.length(), '#');
+        int queryEnd = delimiterOffset(url, queryStart + 1, url.length(), '#');
         return url.substring(queryStart, queryEnd);
     }
 
@@ -1105,8 +1108,8 @@ public final class HttpUrl {
         }
 
         ParseResult parse(HttpUrl base, String input) {
-            int pos = Util.skipLeadingAsciiWhitespace(input, 0, input.length());
-            int limit = Util.skipTrailingAsciiWhitespace(input, pos, input.length());
+            int pos = skipLeadingAsciiWhitespace(input, 0, input.length());
+            int limit = skipTrailingAsciiWhitespace(input, pos, input.length());
 
             // Scheme.
             int schemeDelimiterOffset = schemeDelimiterOffset(input, pos, limit);
@@ -1143,7 +1146,7 @@ public final class HttpUrl {
                 pos += slashCount;
                 authority:
                 while (true) {
-                    int componentDelimiterOffset = Util.delimiterOffset(input, pos, limit, "@/\\?#");
+                    int componentDelimiterOffset = delimiterOffset(input, pos, limit, "@/\\?#");
                     int c = componentDelimiterOffset != limit
                             ? input.charAt(componentDelimiterOffset)
                             : -1;
@@ -1151,7 +1154,7 @@ public final class HttpUrl {
                         case '@':
                             // User info precedes.
                             if (!hasPassword) {
-                                int passwordColonOffset = Util.delimiterOffset(
+                                int passwordColonOffset = delimiterOffset(
                                         input, pos, componentDelimiterOffset, ':');
                                 String canonicalUsername = canonicalize(
                                         input, pos, passwordColonOffset, USERNAME_ENCODE_SET, true, false, false, true);
@@ -1209,13 +1212,13 @@ public final class HttpUrl {
             }
 
             // Resolve the relative path.
-            int pathDelimiterOffset = Util.delimiterOffset(input, pos, limit, "?#");
+            int pathDelimiterOffset = delimiterOffset(input, pos, limit, "?#");
             resolvePath(input, pos, pathDelimiterOffset);
             pos = pathDelimiterOffset;
 
             // Query.
             if (pos < limit && input.charAt(pos) == '?') {
-                int queryDelimiterOffset = Util.delimiterOffset(input, pos, limit, '#');
+                int queryDelimiterOffset = delimiterOffset(input, pos, limit, '#');
                 this.encodedQueryNamesAndValues = queryStringToNamesAndValues(
                         canonicalize(input, pos + 1, queryDelimiterOffset, QUERY_ENCODE_SET, true, false, true, true));
                 pos = queryDelimiterOffset;
@@ -1248,7 +1251,7 @@ public final class HttpUrl {
 
             // Read path segments.
             for (int i = pos; i < limit; ) {
-                int pathSegmentDelimiterOffset = Util.delimiterOffset(input, i, limit, "/\\");
+                int pathSegmentDelimiterOffset = delimiterOffset(input, i, limit, "/\\");
                 boolean segmentHasTrailingSlash = pathSegmentDelimiterOffset < limit;
                 push(input, i, pathSegmentDelimiterOffset, segmentHasTrailingSlash, true);
                 i = pathSegmentDelimiterOffset;
@@ -1401,7 +1404,7 @@ public final class HttpUrl {
                 throw new AssertionError();
             }
 
-            return Util.domainToAscii(percentDecoded);
+            return domainToAscii(percentDecoded);
         }
 
         /**
@@ -1615,7 +1618,7 @@ public final class HttpUrl {
                 int codePoint;
                 for (int j = pos; j < i; j += Character.charCount(codePoint)) {
                     codePoint = encoded.codePointAt(j);
-                    Util.writeUtf8CodePoint(byteBuffer, codePoint);
+                    writeUtf8CodePoint(byteBuffer, codePoint);
                 }
                 return percentDecode(byteBuffer, encoded, i, limit, plusIsSpace);
             }
@@ -1641,9 +1644,9 @@ public final class HttpUrl {
                 byteBuffer.put((byte) ' ');
                 continue;
             }
-            Util.writeUtf8CodePoint(byteBuffer, codePoint);
+            writeUtf8CodePoint(byteBuffer, codePoint);
         }
-        return Util.readUtf8String(byteBuffer);
+        return readUtf8String(byteBuffer);
     }
 
     static boolean percentEncoded(String encoded, int pos, int limit) {
@@ -1706,7 +1709,7 @@ public final class HttpUrl {
                     || encodeSet.indexOf(codePoint) != -1
                     || codePoint == '%' && (!alreadyEncoded || strict && !percentEncoded(input, i, limit))) {
                 // Percent encode this character.
-                byte[] charBytes = Util.utf8Bytes(codePoint);
+                byte[] charBytes = utf8Bytes(codePoint);
                 for (byte charByte : charBytes) {
                     out.append('%');
                     out.append(HEX_DIGITS[(charByte >> 4) & 0xf]);
@@ -1722,5 +1725,153 @@ public final class HttpUrl {
     static String canonicalize(String input, String encodeSet, boolean alreadyEncoded, boolean strict, boolean plusIsSpace,
             boolean asciiOnly) {
         return canonicalize(input, 0, input.length(), encodeSet, alreadyEncoded, strict, plusIsSpace, asciiOnly);
+    }
+
+    /**
+     * Increments {@code pos} until {@code input[pos]} is not ASCII whitespace. Stops at {@code
+     * limit}.
+     */
+    public static int skipLeadingAsciiWhitespace(String input, int pos, int limit) {
+        for (int i = pos; i < limit; i++) {
+            switch (input.charAt(i)) {
+                case '\t':
+                case '\n':
+                case '\f':
+                case '\r':
+                case ' ':
+                    continue;
+                default:
+                    return i;
+            }
+        }
+        return limit;
+    }
+
+    /**
+     * Decrements {@code limit} until {@code input[limit - 1]} is not ASCII whitespace. Stops at
+     * {@code pos}.
+     */
+    public static int skipTrailingAsciiWhitespace(String input, int pos, int limit) {
+        for (int i = limit - 1; i >= pos; i--) {
+            switch (input.charAt(i)) {
+                case '\t':
+                case '\n':
+                case '\f':
+                case '\r':
+                case ' ':
+                    continue;
+                default:
+                    return i + 1;
+            }
+        }
+        return pos;
+    }
+
+    /**
+     * Returns the index of the first character in {@code input} that contains a character in {@code
+     * delimiters}. Returns limit if there is no such character.
+     */
+    public static int delimiterOffset(String input, int pos, int limit, String delimiters) {
+        for (int i = pos; i < limit; i++) {
+            if (delimiters.indexOf(input.charAt(i)) != -1) {
+                return i;
+            }
+        }
+        return limit;
+    }
+
+    /**
+     * Returns the index of the first character in {@code input} that is {@code delimiter}. Returns
+     * limit if there is no such character.
+     */
+    public static int delimiterOffset(String input, int pos, int limit, char delimiter) {
+        for (int i = pos; i < limit; i++) {
+            if (input.charAt(i) == delimiter) {
+                return i;
+            }
+        }
+        return limit;
+    }
+
+    /**
+     * Performs IDN ToASCII encoding and canonicalize the result to lowercase. e.g. This converts
+     * {@code ☃.net} to {@code xn--n3h.net}, and {@code WwW.GoOgLe.cOm} to {@code www.google.com}.
+     * {@code null} will be returned if the input cannot be ToASCII encoded or if the result
+     * contains unsupported ASCII characters.
+     */
+    public static String domainToAscii(String input) {
+        try {
+            String result = IDN.toASCII(input).toLowerCase(Locale.US);
+            if (result.isEmpty()) {
+                return null;
+            }
+
+            // Confirm that the IDN ToASCII result doesn't contain any illegal characters.
+            if (containsInvalidHostnameAsciiCodes(result)) {
+                return null;
+            }
+            // TODO: implement all label limits.
+            return result;
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    private static boolean containsInvalidHostnameAsciiCodes(String hostnameAscii) {
+        for (int i = 0; i < hostnameAscii.length(); i++) {
+            char c = hostnameAscii.charAt(i);
+            // The WHATWG Host parsing rules accepts some character codes which are invalid by
+            // definition for OkHttp's host header checks (and the WHATWG Host syntax definition). Here
+            // we rule out characters that would cause problems in host headers.
+            if (c <= '\u001f' || c >= '\u007f') {
+                return true;
+            }
+            // Check for the characters mentioned in the WHATWG Host parsing spec:
+            // U+0000, U+0009, U+000A, U+000D, U+0020, "#", "%", "/", ":", "?", "@", "[", "\", and "]"
+            // (excluding the characters covered above).
+            if (" #%/:?@[\\]".indexOf(c) != -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static byte[] utf8Bytes(int codePoint) {
+        try {
+            return new String(new int[]{codePoint}, 0, 1).getBytes(Util.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("UTF-8 encoding is not supported, something is very wrong here!");
+        }
+    }
+
+    public static void writeUtf8CodePoint(ByteBuffer byteBuffer, int codePoint) {
+        if (codePoint < 128) {
+            byteBuffer.put((byte) codePoint);
+        } else if (codePoint < 2048) {
+            byteBuffer.put((byte) (codePoint >> 6 | 192));
+            byteBuffer.put((byte) (codePoint & 63 | 128));
+        } else if (codePoint < 65536) {
+            if (codePoint >= '\ud800' && codePoint <= '\udfff') {
+                throw new IllegalArgumentException("Unexpected code point: " + Integer.toHexString(codePoint));
+            }
+
+            byteBuffer.put((byte) (codePoint >> 12 | 224));
+            byteBuffer.put((byte) (codePoint >> 6 & 63 | 128));
+            byteBuffer.put((byte) (codePoint & 63 | 128));
+        } else {
+            if (codePoint > 1114111) {
+                throw new IllegalArgumentException("Unexpected code point: " + Integer.toHexString(codePoint));
+            }
+
+            byteBuffer.put((byte) (codePoint >> 18 | 240));
+            byteBuffer.put((byte) (codePoint >> 12 & 63 | 128));
+            byteBuffer.put((byte) (codePoint >> 6 & 63 | 128));
+            byteBuffer.put((byte) (codePoint & 63 | 128));
+        }
+    }
+
+    public static String readUtf8String(ByteBuffer byteBuffer) {
+        byteBuffer.flip();
+        return StandardCharsets.UTF_8.decode(byteBuffer).toString();
     }
 }
