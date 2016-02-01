@@ -9,7 +9,7 @@ public class HttPizza {
 
     private final HttpConfig httpConfig;
 
-    private ConverterProvider converterProvider;
+    private final ConverterProvider converterProvider;
 
     private ConnectionListener connectionListener;
 
