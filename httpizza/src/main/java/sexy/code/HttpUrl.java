@@ -24,7 +24,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1869,6 +1868,6 @@ public final class HttpUrl {
 
     public static String readUtf8String(ByteBuffer byteBuffer) {
         byteBuffer.flip();
-        return StandardCharsets.UTF_8.decode(byteBuffer).toString();
+        return Util.UTF_8.decode(byteBuffer).toString();
     }
 }
