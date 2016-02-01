@@ -26,7 +26,7 @@ public class Call<T> {
             final HttpResponse httpResponse = engine.execute(request);
             T obj = null;
             if (httpResponse.isSuccess()) {
-                obj = converter.convert(httpResponse.getBody());
+                obj = converter.<T>convert(httpResponse.getBody());
             }
             return new Response<>(httpResponse, obj);
         } catch (RuntimeException e) {
@@ -34,9 +34,12 @@ public class Call<T> {
         }
     }
 
-    public void enqueue(final Callback<T> callback) {
-        final Executor callbackExecutor = engine.callbackExecutor();
+    @SuppressWarnings("unchecked")
+    public <U extends T> void enqueue(final Callback<U> callback) {
+        // this is a weird, imperfect solution to the woes of type erasure
+        // the user will be able to pass in a Callback parametrized by a subclass which is wrong, but I haven't got a better solution
 
+        final Executor callbackExecutor = engine.callbackExecutor();
         engine.httpExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -45,7 +48,7 @@ public class Call<T> {
                     callbackExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
-                            callback.onResponse(response);
+                            callback.onResponse((Response<U>) response);
                         }
                     });
                 } catch (final Throwable t) {
