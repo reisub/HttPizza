@@ -53,8 +53,9 @@ public class HttPizza {
          *
          * @see java.net.URLConnection#setConnectTimeout(int)
          */
-        public void setConnectTimeout(int timeoutMillis) {
+        public Builder connectTimeout(int timeoutMillis) {
             httpConfig.connectTimeout = timeoutMillis;
+            return this;
         }
 
         /**
@@ -62,20 +63,24 @@ public class HttPizza {
          *
          * @see java.net.URLConnection#setReadTimeout(int)
          */
-        public void setReadTimeout(int timeoutMillis) {
+        public Builder readTimeout(int timeoutMillis) {
             httpConfig.readTimeout = timeoutMillis;
+            return this;
         }
 
-        public void setHttpExecutor(Executor executor) {
+        public Builder httpExecutor(Executor executor) {
             httpConfig.httpExecutor = executor;
+            return this;
         }
 
-        public void setCallbackExecutor(Executor executor) {
+        public Builder callbackExecutor(Executor executor) {
             httpConfig.callbackExecutor = executor;
+            return this;
         }
 
-        public void setConverterProvider(ConverterProvider provider) {
+        public Builder converterProvider(ConverterProvider provider) {
             converterProvider = provider;
+            return this;
         }
 
         public HttPizza build() {
