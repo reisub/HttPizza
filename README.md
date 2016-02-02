@@ -56,7 +56,11 @@ Request request = client.newRequest()
 client.newCall(request, String.class).enqueue(new Callback<String>() {
     @Override
     public void onResponse(Response<String> response) {
-        Timber.d(response.getBody());
+        if (response.isSuccessful()) {
+            Timber.d("Body: %s", response.getBody());
+        } else {
+            Timber.d("Status code: %s", response.getCode());
+        }
     }
 
     @Override
