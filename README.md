@@ -35,7 +35,7 @@ Request request = client.newRequest()
 Response<String> response = client.newCall(request).execute();
 ```
 
-### POST request example
+### POST request
 
 ```java
 Request request = client.newRequest()
