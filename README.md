@@ -4,7 +4,7 @@
 [![Download](https://api.bintray.com/packages/reisub/maven/httpizza/images/download.svg) ](https://bintray.com/reisub/maven/httpizza/_latestVersion)
 
 Lightweight HTTP client using [HttpURLConnection](http://developer.android.com/intl/es/reference/java/net/HttpURLConnection.html) under the hood.
-The primary use case is for libraries and SDKs which don't need/want all the features ([and methods!](http://www.methodscount.com/?lib=com.squareup.okhttp3%3Aokhttp%3A3.0.1)) OkHttp/Retrofit provide.
+The primary use case is for libraries and SDKs which don't need/want all the features ([and methods!](http://www.methodscount.com/?lib=com.squareup.okhttp3%3Aokhttp%3A3.0.1)) OkHttp provides.
 
 It has the same limitations as HttpURLConnection like not supporting the PATCH method and not permitting request body in DELETE requests.
 
@@ -32,7 +32,7 @@ Request request = client.newRequest()
         .get()
         .build();
 
-Response<String> response = client.newCall(request).execute();
+Response response = client.newCall(request).execute();
 ```
 
 ### POST request
@@ -43,7 +43,7 @@ Request request = client.newRequest()
         .post(RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), "requestBody"))
         .build();
 
-Response<String> response = client.newCall(request).execute();
+Response response = client.newCall(request).execute();
 ```
 
 ### Async GET request
@@ -55,7 +55,7 @@ Request request = client.newRequest()
 
 client.newCall(request).enqueue(new Callback() {
     @Override
-    public void onResponse(Response<String> response) {
+    public void onResponse(Response response) {
         if (response.isSuccessful()) {
             Timber.d("Body: %s", response.body().string());
         } else {
