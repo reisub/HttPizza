@@ -24,8 +24,8 @@ public class ResponseBody implements Closeable {
     }
 
     @Override
-    public void close() throws IOException {
-        inputStream.close();
+    public void close() {
+        Util.closeQuietly(inputStream);
         connection.disconnect();
         connection = null;
     }
@@ -34,7 +34,7 @@ public class ResponseBody implements Closeable {
         return contentType;
     }
 
-    public BufferedInputStream inputStream() {
+    public BufferedInputStream byteStream() {
         return inputStream;
     }
 
@@ -60,5 +60,4 @@ public class ResponseBody implements Closeable {
     public final String string() throws IOException {
         return new String(bytes(), Util.UTF_8);
     }
-
 }

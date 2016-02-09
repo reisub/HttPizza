@@ -2,8 +2,6 @@ package sexy.code;
 
 import org.junit.Test;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 
 import okhttp3.mockwebserver.MockResponse;
@@ -14,6 +12,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class CallTest extends MockWebServerTest {
+
+    public static final MediaType MEDIA_TYPE_PLAIN_TEXT = MediaType.parse("text/plain; charset=utf-8");
 
     @Test
     public void get() throws Exception {
@@ -31,10 +31,10 @@ public class CallTest extends MockWebServerTest {
                 .get()
                 .build();
 
-        Response<String> response = client.newCall(request).execute();
-        assertEquals(200, response.getCode());
-        assertEquals("text/plain", response.getHeaders().get("Content-Type").get(0));
-        assertEquals("body", response.getBody());
+        Response response = client.newCall(request).execute();
+        assertEquals(200, response.statusCode());
+        assertEquals("text/plain", response.headers().get("Content-Type").get(0));
+        assertEquals("body", response.body().string());
         assertTrue(response.isSuccessful());
 
         RecordedRequest recordedRequest = server.takeRequest();
@@ -58,13 +58,13 @@ public class CallTest extends MockWebServerTest {
         Request request = client.newRequest()
                 .url(url)
                 .addHeader("User-Agent", "UnitTest")
-                .post("requestBody", String.class)
+                .post(RequestBody.create(MEDIA_TYPE_PLAIN_TEXT, "requestBody"))
                 .build();
 
-        Response<String> response = client.newCall(request).execute();
-        assertEquals(200, response.getCode());
-        assertEquals("text/plain", response.getHeaders().get("Content-Type").get(0));
-        assertEquals("body", response.getBody());
+        Response response = client.newCall(request).execute();
+        assertEquals(200, response.statusCode());
+        assertEquals("text/plain", response.headers().get("Content-Type").get(0));
+        assertEquals("body", response.body().string());
         assertTrue(response.isSuccessful());
 
         RecordedRequest recordedRequest = server.takeRequest();
@@ -89,22 +89,13 @@ public class CallTest extends MockWebServerTest {
         Request request = client.newRequest()
                 .url(url)
                 .addHeader("User-Agent", "UnitTest")
-                .post(new RequestBody() {
-                    @Override
-                    public String contentType() {
-                        return null;
-                    }
-
-                    @Override
-                    public void writeTo(BufferedOutputStream os) throws IOException {
-                    }
-                })
+                .post(RequestBody.create(MEDIA_TYPE_PLAIN_TEXT, ""))
                 .build();
 
-        Response<String> response = client.newCall(request).execute();
-        assertEquals(200, response.getCode());
-        assertEquals("text/plain", response.getHeaders().get("Content-Type").get(0));
-        assertEquals("body", response.getBody());
+        Response response = client.newCall(request).execute();
+        assertEquals(200, response.statusCode());
+        assertEquals("text/plain", response.headers().get("Content-Type").get(0));
+        assertEquals("body", response.body().string());
         assertTrue(response.isSuccessful());
 
         RecordedRequest recordedRequest = server.takeRequest();
@@ -128,13 +119,13 @@ public class CallTest extends MockWebServerTest {
         Request request = client.newRequest()
                 .url(url)
                 .addHeader("User-Agent", "UnitTest")
-                .put("requestBody", String.class)
+                .put(RequestBody.create(MEDIA_TYPE_PLAIN_TEXT, "requestBody"))
                 .build();
 
-        Response<String> response = client.newCall(request).execute();
-        assertEquals(200, response.getCode());
-        assertEquals("text/plain", response.getHeaders().get("Content-Type").get(0));
-        assertEquals("body", response.getBody());
+        Response response = client.newCall(request).execute();
+        assertEquals(200, response.statusCode());
+        assertEquals("text/plain", response.headers().get("Content-Type").get(0));
+        assertEquals("body", response.body().string());
         assertTrue(response.isSuccessful());
 
         RecordedRequest recordedRequest = server.takeRequest();
@@ -162,10 +153,10 @@ public class CallTest extends MockWebServerTest {
                 .delete()
                 .build();
 
-        Response<String> response = client.newCall(request).execute();
-        assertEquals(200, response.getCode());
-        assertEquals("text/plain", response.getHeaders().get("Content-Type").get(0));
-        assertEquals("body", response.getBody());
+        Response response = client.newCall(request).execute();
+        assertEquals(200, response.statusCode());
+        assertEquals("text/plain", response.headers().get("Content-Type").get(0));
+        assertEquals("body", response.body().string());
         assertTrue(response.isSuccessful());
 
         RecordedRequest recordedRequest = server.takeRequest();
@@ -192,9 +183,9 @@ public class CallTest extends MockWebServerTest {
                 .method("HEAD", null)
                 .build();
 
-        Response<String> response = client.newCall(request).execute();
-        assertEquals(200, response.getCode());
-        assertEquals("text/plain", response.getHeaders().get("Content-Type").get(0));
+        Response response = client.newCall(request).execute();
+        assertEquals(200, response.statusCode());
+        assertEquals("text/plain", response.headers().get("Content-Type").get(0));
         assertTrue(response.isSuccessful());
 
         RecordedRequest recordedRequest = server.takeRequest();

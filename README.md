@@ -13,7 +13,7 @@ It has the same limitations as HttpURLConnection like not supporting the PATCH m
 Add the library as a dependency to your ```build.gradle``` to automatically download it from jcenter.
 
 ```groovy
-compile 'sexy.code:httpizza:0.1.0'
+compile 'sexy.code:httpizza:0.2.0'
 ```
 
 We also maintain a [changelog](CHANGELOG.md).
@@ -40,7 +40,7 @@ Response<String> response = client.newCall(request).execute();
 ```java
 Request request = client.newRequest()
         .url(url)
-        .post("requestBody", String.class)
+        .post(RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), "requestBody"))
         .build();
 
 Response<String> response = client.newCall(request).execute();
@@ -53,13 +53,13 @@ Request request = client.newRequest()
         .url(url)
         .build();
 
-client.newCall(request, String.class).enqueue(new Callback<String>() {
+client.newCall(request).enqueue(new Callback() {
     @Override
     public void onResponse(Response<String> response) {
         if (response.isSuccessful()) {
-            Timber.d("Body: %s", response.getBody());
+            Timber.d("Body: %s", response.body().string());
         } else {
-            Timber.d("Status code: %s", response.getCode());
+            Timber.d("Status code: %s", response.statusCode());
         }
     }
 

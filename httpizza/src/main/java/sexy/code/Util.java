@@ -25,4 +25,10 @@ public final class Util {
 
         }
     }
+
+    public static void checkOffsetAndCount(long arrayLength, long offset, long count) {
+        if ((offset | count) < 0 || offset > arrayLength || arrayLength - offset < count) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+    }
 }

@@ -1,6 +1,5 @@
 package sexy.code;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,14 +27,11 @@ public class Request {
 
     private RequestBody body;
 
-    private RequestConvertTask<?> pendingTask;
-
     Request(Builder builder) {
         this.url = builder.url;
         this.method = builder.method;
         this.headers = builder.headers;
         this.body = builder.body;
-        this.pendingTask = builder.task;
     }
 
     public HttpUrl getUrl() {
@@ -58,13 +54,7 @@ public class Request {
         this.body = body;
     }
 
-    RequestConvertTask<?> getPendingTask() {
-        return pendingTask;
-    }
-
     public static class Builder {
-
-        private final ConverterProvider converterProvider;
 
         private HttpUrl url;
 
@@ -74,10 +64,7 @@ public class Request {
 
         private RequestBody body;
 
-        private RequestConvertTask<?> task;
-
-        Builder(final ConverterProvider converterProvider) {
-            this.converterProvider = converterProvider;
+        Builder() {
             method = METHOD_GET;
             headers = new HashMap<>();
         }
@@ -109,10 +96,6 @@ public class Request {
             return method(METHOD_POST, body);
         }
 
-        public <T> Builder post(T body, Type type) {
-            return method(METHOD_POST, body, type);
-        }
-
         /**
          * HttpUrlConnection does not support sending request body with DELETE request
          */
@@ -124,10 +107,6 @@ public class Request {
             return method(METHOD_PUT, body);
         }
 
-        public <T> Builder put(T body, Type type) {
-            return method(METHOD_PUT, body, type);
-        }
-
         public Builder addHeader(String name, String value) {
             headers.put(name, value);
             return this;
@@ -136,14 +115,6 @@ public class Request {
         public Builder method(String method, RequestBody body) {
             this.method = method;
             this.body = body;
-            this.task = null;
-            return this;
-        }
-
-        public <T> Builder method(String method, T body, Type type) {
-            this.method = method;
-            this.body = null;
-            this.task = new RequestConvertTask<>(body, converterProvider.requestConverter(type));
             return this;
         }
 

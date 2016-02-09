@@ -52,9 +52,10 @@ class HttpEngine {
         }
 
         final int statusCode = urlConnection.getResponseCode();
+        final String message = urlConnection.getResponseMessage();
         final Map<String, List<String>> responseHeaders = urlConnection.getHeaderFields();
         final ResponseBody body = doInput(urlConnection);
-        return new HttpResponse(request, statusCode, responseHeaders, body);
+        return new HttpResponse(request, statusCode, message, responseHeaders, body);
     }
 
     public Executor httpExecutor() {
@@ -85,7 +86,7 @@ class HttpEngine {
     private static void doOutput(final HttpURLConnection urlConnection, final RequestBody body)
             throws IOException {
         urlConnection.setDoOutput(true);
-        final String contentType = body.contentType();
+        final String contentType = body.contentType().toString();
         if (contentType != null) {
             urlConnection.addRequestProperty("Content-Type", contentType);
         }

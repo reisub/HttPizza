@@ -9,14 +9,16 @@ public class HttpResponse {
 
     private final int code;
 
+    private String message;
+
     private final Map<String, List<String>> headers;
 
     private final ResponseBody body;
 
-    HttpResponse(final Request request, final int code, final Map<String, List<String>> headers,
-            final ResponseBody body) {
+    HttpResponse(final Request request, final int code, String message, final Map<String, List<String>> headers, final ResponseBody body) {
         this.request = request;
         this.code = code;
+        this.message = message;
         this.headers = headers;
         this.body = body;
     }
@@ -41,4 +43,7 @@ public class HttpResponse {
         return code / 100 == 2;
     }
 
+    public String getMessage() {
+        return message;
+    }
 }
