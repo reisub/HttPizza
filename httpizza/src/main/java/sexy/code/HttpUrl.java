@@ -277,25 +277,25 @@ public final class HttpUrl {
 
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
-    static final String USERNAME_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
+    private static final String USERNAME_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
 
-    static final String PASSWORD_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
+    private static final String PASSWORD_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
 
-    static final String PATH_SEGMENT_ENCODE_SET = " \"<>^`{}|/\\?#";
+    private static final String PATH_SEGMENT_ENCODE_SET = " \"<>^`{}|/\\?#";
 
-    static final String PATH_SEGMENT_ENCODE_SET_URI = "[]";
+    private static final String PATH_SEGMENT_ENCODE_SET_URI = "[]";
 
-    static final String QUERY_ENCODE_SET = " \"'<>#";
+    private static final String QUERY_ENCODE_SET = " \"'<>#";
 
-    static final String QUERY_COMPONENT_ENCODE_SET = " \"'<>#&=";
+    private static final String QUERY_COMPONENT_ENCODE_SET = " \"'<>#&=";
 
-    static final String QUERY_COMPONENT_ENCODE_SET_URI = "\\^`{|}";
+    private static final String QUERY_COMPONENT_ENCODE_SET_URI = "\\^`{|}";
 
-    static final String FORM_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#&!$(),~";
+    private static final String FORM_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#&!$(),~";
 
-    static final String FRAGMENT_ENCODE_SET = "";
+    private static final String FRAGMENT_ENCODE_SET = "";
 
-    static final String FRAGMENT_ENCODE_SET_URI = " \"#<>\\^`{|}";
+    private static final String FRAGMENT_ENCODE_SET_URI = " \"#<>\\^`{|}";
 
     /**
      * Either "http" or "https".
@@ -409,7 +409,7 @@ public final class HttpUrl {
     }
 
     public boolean isHttps() {
-        return scheme.equals("https");
+        return "https".equals(scheme);
     }
 
     /**
@@ -499,7 +499,7 @@ public final class HttpUrl {
         return url.substring(pathStart, pathEnd);
     }
 
-    static void pathSegmentsToString(StringBuilder out, List<String> pathSegments) {
+    private static void pathSegmentsToString(StringBuilder out, List<String> pathSegments) {
         for (int i = 0, size = pathSegments.size(); i < size; i++) {
             out.append('/');
             out.append(pathSegments.get(i));
@@ -537,7 +537,7 @@ public final class HttpUrl {
         return url.substring(queryStart, queryEnd);
     }
 
-    static void namesAndValuesToQueryString(StringBuilder out, List<String> namesAndValues) {
+    private static void namesAndValuesToQueryString(StringBuilder out, List<String> namesAndValues) {
         for (int i = 0, size = namesAndValues.size(); i < size; i += 2) {
             String name = namesAndValues.get(i);
             String value = namesAndValues.get(i + 1);
@@ -558,7 +558,7 @@ public final class HttpUrl {
      * "easy", null, "problem", "5-2=3"]}. Note that values may be null and may contain '='
      * characters.
      */
-    static List<String> queryStringToNamesAndValues(String encodedQuery) {
+    private static List<String> queryStringToNamesAndValues(String encodedQuery) {
         List<String> result = new ArrayList<>();
         for (int pos = 0; pos <= encodedQuery.length(); ) {
             int ampersandOffset = encodedQuery.indexOf('&', pos);
@@ -1593,7 +1593,7 @@ public final class HttpUrl {
         }
     }
 
-    static String percentDecode(String encoded, boolean plusIsSpace) {
+    private static String percentDecode(String encoded, boolean plusIsSpace) {
         return percentDecode(encoded, 0, encoded.length(), plusIsSpace);
     }
 
