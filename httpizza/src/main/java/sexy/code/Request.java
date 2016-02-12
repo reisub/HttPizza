@@ -50,10 +50,6 @@ public class Request {
         return body;
     }
 
-    void setBody(RequestBody body) {
-        this.body = body;
-    }
-
     public static class Builder {
 
         private HttpUrl url;
