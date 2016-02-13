@@ -15,7 +15,7 @@ It has the same limitations as HttpURLConnection like not supporting the PATCH m
 Add the library as a dependency to your ```build.gradle``` to automatically download it from jcenter.
 
 ```groovy
-compile 'sexy.code:httpizza:0.2.0'
+compile 'sexy.code:httpizza:0.3.0'
 ```
 
 We also maintain a [changelog](CHANGELOG.md).
