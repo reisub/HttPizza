@@ -6,8 +6,6 @@ public class HttPizza {
 
     private final HttpConfig httpConfig;
 
-    private ConnectionListener connectionListener;
-
     HttPizza(HttpConfig config) {
         this.httpConfig = config;
     }
@@ -16,12 +14,8 @@ public class HttPizza {
         this(new HttpConfig());
     }
 
-    public void setConnectionListener(final ConnectionListener listener) {
-        connectionListener = listener;
-    }
-
     public Call newCall(final Request request) {
-        return new Call(new HttpEngine(httpConfig, connectionListener), request);
+        return new Call(new HttpEngine(httpConfig), request);
     }
 
     public Request.Builder newRequest() {

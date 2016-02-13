@@ -16,11 +16,8 @@ class HttpEngine {
 
     private final HttpConfig config;
 
-    private final ConnectionListener connectionListener;
-
-    HttpEngine(final HttpConfig config, final ConnectionListener l) {
+    HttpEngine(final HttpConfig config) {
         this.config = config;
-        this.connectionListener = l;
     }
 
     public Response execute(final Request request) throws IOException {
@@ -41,15 +38,7 @@ class HttpEngine {
             doOutput(urlConnection, request.getBody());
         }
 
-        if (connectionListener != null) {
-            connectionListener.onPreConnect(request, urlConnection);
-        }
-
         urlConnection.connect();
-
-        if (connectionListener != null) {
-            connectionListener.onPostConnect(request, urlConnection);
-        }
 
         final int statusCode = urlConnection.getResponseCode();
         final String message = urlConnection.getResponseMessage();
