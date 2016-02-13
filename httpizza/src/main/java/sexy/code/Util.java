@@ -2,6 +2,9 @@ package sexy.code;
 
 import java.io.Closeable;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public final class Util {
 
@@ -30,5 +33,10 @@ public final class Util {
         if ((offset | count) < 0 || offset > arrayLength || arrayLength - offset < count) {
             throw new ArrayIndexOutOfBoundsException();
         }
+    }
+
+    /** Returns an immutable copy of {@code list}. */
+    public static <T> List<T> immutableList(List<T> list) {
+        return Collections.unmodifiableList(new ArrayList<>(list));
     }
 }

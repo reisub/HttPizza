@@ -275,27 +275,27 @@ import java.util.Set;
  */
 public final class HttpUrl {
 
-    private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
-    private static final String USERNAME_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
+    static final String USERNAME_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
 
-    private static final String PASSWORD_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
+    static final String PASSWORD_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
 
-    private static final String PATH_SEGMENT_ENCODE_SET = " \"<>^`{}|/\\?#";
+    static final String PATH_SEGMENT_ENCODE_SET = " \"<>^`{}|/\\?#";
 
-    private static final String PATH_SEGMENT_ENCODE_SET_URI = "[]";
+    static final String PATH_SEGMENT_ENCODE_SET_URI = "[]";
 
-    private static final String QUERY_ENCODE_SET = " \"'<>#";
+    static final String QUERY_ENCODE_SET = " \"'<>#";
 
-    private static final String QUERY_COMPONENT_ENCODE_SET = " \"'<>#&=";
+    static final String QUERY_COMPONENT_ENCODE_SET = " \"'<>#&=";
 
-    private static final String QUERY_COMPONENT_ENCODE_SET_URI = "\\^`{|}";
+    static final String QUERY_COMPONENT_ENCODE_SET_URI = "\\^`{|}";
 
-    private static final String FORM_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#&!$(),~";
+    static final String FORM_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#&!$(),~";
 
-    private static final String FRAGMENT_ENCODE_SET = "";
+    static final String FRAGMENT_ENCODE_SET = "";
 
-    private static final String FRAGMENT_ENCODE_SET_URI = " \"#<>\\^`{|}";
+    static final String FRAGMENT_ENCODE_SET_URI = " \"#<>\\^`{|}";
 
     /**
      * Either "http" or "https".
@@ -1593,11 +1593,11 @@ public final class HttpUrl {
         }
     }
 
-    private static String percentDecode(String encoded, boolean plusIsSpace) {
+    static String percentDecode(String encoded, boolean plusIsSpace) {
         return percentDecode(encoded, 0, encoded.length(), plusIsSpace);
     }
 
-    private List<String> percentDecode(List<String> list, boolean plusIsSpace) {
+    List<String> percentDecode(List<String> list, boolean plusIsSpace) {
         List<String> result = new ArrayList<>(list.size());
         for (String s : list) {
             result.add(s != null ? percentDecode(s, plusIsSpace) : null);

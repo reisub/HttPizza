@@ -72,6 +72,21 @@ client.newCall(request).enqueue(new Callback() {
 });
 ```
 
+### POST request with form parameters
+
+```java
+RequestBody formBody = new FormBody.Builder()
+        .add("search", "Airplane!")
+        .build();
+
+Request request = client.newRequest()
+        .url(url)
+        .post(formBody)
+        .build();
+
+Response response = client.newCall(request).execute();
+```
+
 ## Credits
 
 HttPizza reuses parts of [OkHttp](https://github.com/square/okhttp) and is largely based on [lighthttp](https://github.com/satorufujiwara/lighthttp).
