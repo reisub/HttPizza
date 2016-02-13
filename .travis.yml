@@ -1,4 +1,10 @@
 language: android
+
+env:
+  global:
+  - CI_NAME=travis-ci
+  - secure: Q4dXi7tRbW3ilrZD0uxVTJLoFx4azlGWvdk5GsVkEfFxfMpb0PCV03KgrzReBhCaYC+uN8bkF80aGv0KlVcbrZtmRAVCGDcK8fbP6q8t9l1/YWTeO6i/Pgbri8h7ozrtUtlCv+5c2liBdjwNM6XVI597+VOl1GzAw/5UWqrDCAOin0Ev/JccVLU6/4hJfDGN1Ek/S2UpqozbUNHBYUHHDKqLMud4QhnklIMUHubOT/hBAcS5qZaARoBo7tc0goBry+1LAUrsPSv5mebyq7c2blr3VlrlVxNdfQearDQ6RZBiyABnD9eCCWRMb2XTk7lGXISKkfH9rPys/Wu/DIVHgP/u1qCcv5woDVPK4mXLxY7yafW98EawJxMSppxdNOqq7+MMHE9FNyW0qVtyjlMFPAEvHUBG13Lp4QOntEZWtvVsR/XMRPTn4DRp535ahGcoiyosefqplI7xamNzFdFUHcIBPnbIHyKiFizQtRKDZ0B258K16Wc3IMQTmNPozx4xlxLYvK95rAfF504j9+1+eCvl+Hq1RFGQ+Bgs4a6iMyr1ss9eRMM4SfC6AsvhlZr1FxdNb30ubpmhZz+djOeq4AAgFbLWiLhV6dWS4iEHZv9Y1ep9DSA09+fwVLFTfA5ZHR0uVgYz4k0MKOH5ZrtusH2bBvxUBT6yziko/F5dWpM=
+
 android:
   components:
     # Uncomment the lines below if you want to
@@ -22,3 +28,6 @@ android:
     # if you need to run emulator(s) during your tests
     # - sys-img-armeabi-v7a-android-19
     # - sys-img-x86-android-17
+
+after_success:
+  - "./gradlew cobertura coveralls"
