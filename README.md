@@ -61,7 +61,7 @@ client.newCall(request).enqueue(new Callback() {
         if (response.isSuccessful()) {
             Timber.d("Body: %s", response.body().string());
         } else {
-            Timber.d("Status code: %s", response.statusCode());
+            Timber.d("Status code: %s", response.code());
         }
     }
 

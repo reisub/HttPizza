@@ -16,8 +16,7 @@ public class Call {
 
     public Response execute() throws IOException {
         try {
-            final HttpResponse httpResponse = engine.execute(request);
-            return new Response(httpResponse, httpResponse.getBody());
+            return engine.execute(request);
         } catch (RuntimeException e) {
             throw new IOException(e);
         }

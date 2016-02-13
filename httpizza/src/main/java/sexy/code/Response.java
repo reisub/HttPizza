@@ -5,37 +5,42 @@ import java.util.Map;
 
 public class Response {
 
-    private final HttpResponse origin;
-
     private final ResponseBody body;
 
-    Response(HttpResponse origin, ResponseBody body) {
-        this.origin = origin;
+    private final Request request;
+
+    private final int code;
+
+    private final String message;
+
+    private final Map<String, List<String>> headers;
+
+    Response(final Request request, final int code, String message, final Map<String, List<String>> headers, final ResponseBody body) {
+        this.request = request;
+        this.code = code;
+        this.message = message;
+        this.headers = headers;
         this.body = body;
     }
 
-    public HttpResponse getOrigin() {
-        return origin;
-    }
-
     public Request getRequest() {
-        return origin.getRequest();
+        return request;
     }
 
     public boolean isSuccessful() {
-        return origin.isSuccess();
+        return (code / 100) == 2;
     }
 
-    public int statusCode() {
-        return origin.getCode();
+    public int code() {
+        return code;
     }
 
     public String message() {
-        return origin.getMessage();
+        return message;
     }
 
     public Map<String, List<String>> headers() {
-        return origin.getHeaders();
+        return headers;
     }
 
     public ResponseBody body() {

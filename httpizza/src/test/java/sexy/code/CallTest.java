@@ -32,7 +32,7 @@ public class CallTest extends MockWebServerTest {
                 .build();
 
         Response response = client.newCall(request).execute();
-        assertEquals(200, response.statusCode());
+        assertEquals(200, response.code());
         assertEquals("text/plain", response.headers().get("Content-Type").get(0));
         assertEquals("body", response.body().string());
         assertTrue(response.isSuccessful());
@@ -62,7 +62,7 @@ public class CallTest extends MockWebServerTest {
                 .build();
 
         Response response = client.newCall(request).execute();
-        assertEquals(200, response.statusCode());
+        assertEquals(200, response.code());
         assertEquals("text/plain", response.headers().get("Content-Type").get(0));
         assertEquals("body", response.body().string());
         assertTrue(response.isSuccessful());
@@ -93,7 +93,7 @@ public class CallTest extends MockWebServerTest {
                 .build();
 
         Response response = client.newCall(request).execute();
-        assertEquals(200, response.statusCode());
+        assertEquals(200, response.code());
         assertEquals("text/plain", response.headers().get("Content-Type").get(0));
         assertEquals("body", response.body().string());
         assertTrue(response.isSuccessful());
@@ -123,7 +123,7 @@ public class CallTest extends MockWebServerTest {
                 .build();
 
         Response response = client.newCall(request).execute();
-        assertEquals(200, response.statusCode());
+        assertEquals(200, response.code());
         assertEquals("text/plain", response.headers().get("Content-Type").get(0));
         assertEquals("body", response.body().string());
         assertTrue(response.isSuccessful());
@@ -154,7 +154,7 @@ public class CallTest extends MockWebServerTest {
                 .build();
 
         Response response = client.newCall(request).execute();
-        assertEquals(200, response.statusCode());
+        assertEquals(200, response.code());
         assertEquals("text/plain", response.headers().get("Content-Type").get(0));
         assertEquals("body", response.body().string());
         assertTrue(response.isSuccessful());
@@ -184,7 +184,7 @@ public class CallTest extends MockWebServerTest {
                 .build();
 
         Response response = client.newCall(request).execute();
-        assertEquals(200, response.statusCode());
+        assertEquals(200, response.code());
         assertEquals("text/plain", response.headers().get("Content-Type").get(0));
         assertTrue(response.isSuccessful());
 

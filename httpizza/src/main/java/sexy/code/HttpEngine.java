@@ -23,7 +23,7 @@ class HttpEngine {
         this.connectionListener = l;
     }
 
-    public HttpResponse execute(final Request request) throws IOException {
+    public Response execute(final Request request) throws IOException {
         final URL httpUrl = request.getUrl().url();
         final HttpURLConnection urlConnection = (HttpURLConnection) httpUrl.openConnection();
 
@@ -55,7 +55,7 @@ class HttpEngine {
         final String message = urlConnection.getResponseMessage();
         final Map<String, List<String>> responseHeaders = urlConnection.getHeaderFields();
         final ResponseBody body = doInput(urlConnection);
-        return new HttpResponse(request, statusCode, message, responseHeaders, body);
+        return new Response(request, statusCode, message, responseHeaders, body);
     }
 
     public Executor httpExecutor() {
