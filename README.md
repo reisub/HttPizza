@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Download](https://api.bintray.com/packages/reisub/maven/httpizza/images/download.svg) ](https://bintray.com/reisub/maven/httpizza/_latestVersion)
-[![Method count](https://img.shields.io/badge/Methods count-355-e91e63.svg)](http://www.methodscount.com/?lib=sexy.code%3Ahttpizza%3A0.2.0")
+[![Method count](https://img.shields.io/badge/Methods count-355-e91e63.svg)](http://www.methodscount.com/?lib=sexy.code%3Ahttpizza%3A0.3.0")
 [![Coverage Status](https://coveralls.io/repos/github/reisub/HttPizza/badge.svg?branch=coveralls)](https://coveralls.io/github/reisub/HttPizza?branch=coveralls)
 
 Lightweight HTTP client using [HttpURLConnection](http://developer.android.com/intl/es/reference/java/net/HttpURLConnection.html) under the hood.
