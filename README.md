@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Download](https://api.bintray.com/packages/reisub/maven/httpizza/images/download.svg) ](https://bintray.com/reisub/maven/httpizza/_latestVersion)
 [![Method count](https://img.shields.io/badge/Methods count-355-e91e63.svg)](http://www.methodscount.com/?lib=sexy.code%3Ahttpizza%3A0.3.0")
-[![Coverage Status](https://coveralls.io/repos/github/reisub/HttPizza/badge.svg?branch=coveralls)](https://coveralls.io/github/reisub/HttPizza?branch=coveralls)
+[![Coverage Status](https://coveralls.io/repos/github/reisub/HttPizza/badge.svg?branch=coveralls)](https://coveralls.io/github/reisub/HttPizza?branch=master)
 
 Lightweight HTTP client using [HttpURLConnection](http://developer.android.com/intl/es/reference/java/net/HttpURLConnection.html) under the hood.
 The primary use case is for libraries and SDKs which don't need/want all the features ([and methods!](http://www.methodscount.com/?lib=com.squareup.okhttp3%3Aokhttp%3A3.0.1)) OkHttp provides.
