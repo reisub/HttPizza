@@ -6,7 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/reisub/HttPizza/badge.svg?branch=coveralls)](https://coveralls.io/github/reisub/HttPizza?branch=master)
 
 Lightweight HTTP client using [HttpURLConnection](http://developer.android.com/intl/es/reference/java/net/HttpURLConnection.html) under the hood.
-The primary use case is for libraries and SDKs which don't need/want all the features ([and methods!](http://www.methodscount.com/?lib=com.squareup.okhttp3%3Aokhttp%3A3.0.1)) OkHttp provides.
+The primary use case is for apps, libraries and SDKs which don't need/want all the features ([and methods!](http://www.methodscount.com/?lib=com.squareup.okhttp3%3Aokhttp%3A3.0.1)) OkHttp provides.
 
 It has the same limitations as HttpURLConnection like not supporting the PATCH method and not permitting request body in DELETE requests.
 
