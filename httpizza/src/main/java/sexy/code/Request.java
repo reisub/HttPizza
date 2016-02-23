@@ -34,19 +34,19 @@ public class Request {
         this.body = builder.body;
     }
 
-    public HttpUrl getUrl() {
+    public HttpUrl url() {
         return url;
     }
 
-    public Map<String, String> getHeaders() {
+    public Map<String, String> headers() {
         return headers;
     }
 
-    public String getMethod() {
+    public String method() {
         return method;
     }
 
-    public RequestBody getBody() {
+    public RequestBody body() {
         return body;
     }
 
@@ -84,6 +84,10 @@ public class Request {
             return url(parsed);
         }
 
+        public Builder head() {
+            return method(METHOD_HEAD, null);
+        }
+
         public Builder get() {
             return method(METHOD_GET, null);
         }
@@ -103,7 +107,8 @@ public class Request {
             return method(METHOD_PUT, body);
         }
 
-        public Builder addHeader(String name, String value) {
+        public Builder header(String name, String value) {
+            checkHeaderNameAndValue(name, value);
             headers.put(name, value);
             return this;
         }
@@ -119,6 +124,31 @@ public class Request {
                 throw new IllegalStateException("url == null");
             }
             return new Request(this);
+        }
+
+        private void checkHeaderNameAndValue(String name, String value) {
+            if (name == null) {
+                throw new IllegalArgumentException("name == null");
+            }
+            if (name.isEmpty()) {
+                throw new IllegalArgumentException("name is empty");
+            }
+            for (int i = 0, length = name.length(); i < length; i++) {
+                char c = name.charAt(i);
+                if (c <= '\u001f' || c >= '\u007f') {
+                    throw new IllegalArgumentException(String.format("Unexpected char %#04x at %d in header name: %s", (int) c, i, name));
+                }
+            }
+            if (value == null) {
+                throw new IllegalArgumentException("value == null");
+            }
+            for (int i = 0, length = value.length(); i < length; i++) {
+                char c = value.charAt(i);
+                if (c <= '\u001f' || c >= '\u007f') {
+                    throw new IllegalArgumentException(
+                            String.format("Unexpected char %#04x at %d in %s value: %s", (int) c, i, name, value));
+                }
+            }
         }
     }
 }

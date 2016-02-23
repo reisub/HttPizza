@@ -26,7 +26,7 @@ public class CallTest {
 
             return client.newRequest()
                     .url(url)
-                    .addHeader("User-Agent", "UnitTest")
+                    .header("User-Agent", "UnitTest")
                     .get()
                     .build();
         }
@@ -66,7 +66,7 @@ public class CallTest {
 
             return client.newRequest()
                     .url(url)
-                    .addHeader("User-Agent", "UnitTest")
+                    .header("User-Agent", "UnitTest")
                     .post(RequestBody.create(MEDIA_TYPE_PLAIN_TEXT, "requestBody"))
                     .build();
         }
@@ -107,7 +107,7 @@ public class CallTest {
 
             return client.newRequest()
                     .url(url)
-                    .addHeader("User-Agent", "UnitTest")
+                    .header("User-Agent", "UnitTest")
                     .post(RequestBody.create(MEDIA_TYPE_PLAIN_TEXT, ""))
                     .build();
         }
@@ -147,7 +147,7 @@ public class CallTest {
 
             return client.newRequest()
                     .url(url)
-                    .addHeader("User-Agent", "UnitTest")
+                    .header("User-Agent", "UnitTest")
                     .put(RequestBody.create(MEDIA_TYPE_PLAIN_TEXT, "requestBody"))
                     .build();
         }
@@ -188,7 +188,7 @@ public class CallTest {
 
             return client.newRequest()
                     .url(url)
-                    .addHeader("User-Agent", "UnitTest")
+                    .header("User-Agent", "UnitTest")
                     .delete()
                     .build();
         }
@@ -228,7 +228,7 @@ public class CallTest {
 
             return client.newRequest()
                     .url(url)
-                    .addHeader("User-Agent", "UnitTest")
+                    .header("User-Agent", "UnitTest")
                     .method("HEAD", null)
                     .build();
         }

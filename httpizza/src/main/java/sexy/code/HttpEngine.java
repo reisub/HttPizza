@@ -21,21 +21,21 @@ class HttpEngine {
     }
 
     public Response execute(final Request request) throws IOException {
-        final URL httpUrl = request.getUrl().url();
+        final URL httpUrl = request.url().url();
         final HttpURLConnection urlConnection = (HttpURLConnection) httpUrl.openConnection();
 
-        urlConnection.setRequestMethod(request.getMethod());
+        urlConnection.setRequestMethod(request.method());
         urlConnection.setReadTimeout(config.readTimeout);
         urlConnection.setConnectTimeout(config.connectTimeout);
         urlConnection.setDoInput(true);
 
-        final Map<String, String> headers = request.getHeaders();
+        final Map<String, String> headers = request.headers();
         if (headers != null && !headers.isEmpty()) {
             addRequestProperties(urlConnection, headers);
         }
 
         if (isOutput(request)) {
-            doOutput(urlConnection, request.getBody());
+            doOutput(urlConnection, request.body());
         }
 
         urlConnection.connect();
@@ -65,10 +65,10 @@ class HttpEngine {
     }
 
     private static boolean isOutput(final Request request) {
-        if (request.getBody() == null) {
+        if (request.body() == null) {
             return false;
         }
-        final String method = request.getMethod();
+        final String method = request.method();
         return Request.METHOD_POST.equals(method) || Request.METHOD_PUT.equals(method);
     }
 
